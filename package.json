@@ -1,0 +1,28 @@
+{
+  "name": "multiagent-tax-calculator",
+  "version": "1.0.0",
+  "description": "A multiagent workflow using LangChain with Debate/Ensemble coordination pattern",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "ts-node src/index.ts",
+    "test": "jest"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "ts-node": "^10.9.0",
+    "@types/jest": "^29.5.0",
+    "jest": "^29.5.0",
+    "ts-jest": "^29.1.0"
+  },
+  "dependencies": {
+    "langchain": "^0.1.0",
+    "@langchain/core": "^0.1.0",
+    "@langchain/openai": "^0.0.14",
+    "@langchain/anthropic": "^0.1.1",
+    "@langchain/google-genai": "^0.0.6",
+    "dotenv": "^16.3.0"
+  }
+}
