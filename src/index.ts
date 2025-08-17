@@ -1,9 +1,8 @@
-import { TaxCalculatorExample } from './examples/TaxCalculatorExample';
+import { BasicExample } from './examples/BasicExample';
 import { validateConfig } from './config/config';
 
 async function main() {
-  console.log('🤖 Multi-Agent Tax Calculator');
-  console.log('Powered by LangChain with Debate/Ensemble Coordination');
+  console.log('🤖 Multi-Agent Basic Example');
   console.log('=' .repeat(60));
 
   // Validate configuration
@@ -15,8 +14,8 @@ async function main() {
   console.log('🚀 Initializing multi-agent system...\n');
 
   try {
-    const taxCalculator = new TaxCalculatorExample();
-    await taxCalculator.runExampleScenarios();
+    const example = new BasicExample();
+    await example.runExampleScenarios();
     
     console.log('\n🎉 All scenarios completed successfully!');
     
