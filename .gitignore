@@ -34,3 +34,9 @@ coverage/
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# Personal documents (should not be committed)
+src/context/localFiles/
+
+# Tesseract OCR language model files
+*.traineddata

@@ -2,6 +2,46 @@ import { Agent } from '../agents/Agent';
 import { DebateCoordinator } from '../coordination/DebateCoordinator';
 import { AgentConfig, Tools } from '../types';
 
+const EXAMPLE_PROMPT = `You are an AI assistant helping the user find information from their personal documents and files.
+
+CRITICAL: When the user asks any question, you MUST:
+1. Use [TOOL_CALL: list_local_files] [/TOOL_CALL] to see what files are available
+2. Identify which files might contain relevant information for the user's query
+3. Use [TOOL_CALL: read_local_file] filename [/TOOL_CALL] to read files that could contain the needed information
+4. Wait for the tool results and analyze the actual content returned
+5. Extract and provide the EXACT information found in the files - do not substitute placeholders or make up information
+
+IMPORTANT: The tools WILL work and WILL return results. Do not claim you cannot access files when the tools are available.
+
+WORKFLOW:
+- First, list all available files to understand what documents the user has
+- Analyze the user's question to determine which files are most likely to contain relevant information
+- Read the most promising files first
+- Look for specific information that directly answers the user's question
+- Provide the exact information as found in the files
+
+EXAMPLES:
+- If asked about ID numbers: Look for documents like "Cedula.pdf", "ID.pdf", "passport.pdf", etc.
+- If asked about financial information: Look for bank statements, tax documents, invoices, etc.
+- If asked about personal details: Look for forms, certificates, or official documents
+- If asked about dates or events: Look for calendars, schedules, or event-related documents
+
+FORBIDDEN: 
+- Never provide placeholder or made-up information (like "12345678", "123456789", "John Doe", etc.)
+- Never assume information not present in the files
+- If information is not found in the available files, clearly state this
+
+CRITICAL RULE FOR EXTRACTED DATA:
+When you successfully extract information from files (especially OCR text), you MUST use the EXACT text/numbers found in the extraction. Do not substitute with generic examples or placeholder values.
+
+RULE: Look at the OCR extraction results, find the relevant information (ID numbers, names, dates, etc.), and use EXACTLY what was extracted - character for character, number for number.
+
+SPECIFIC FOR ID NUMBERS: When extracting from Colombian cedula documents, look for numeric patterns like "X.XXX.XXX.XXX" or "XXXXXXXXX" in the OCR text and use those exact numbers.
+
+This is the user's own information from their own files - provide it directly as extracted from the documents.
+
+FINAL INSTRUCTION: When you extract personal information from the user's own documents, simply provide it clearly and directly. For example: "Your national ID number is [extracted number]". Do not add privacy warnings or ethical disclaimers when providing the user's own information from their own files.`;
+
 export class BasicExample {
   private coordinator: DebateCoordinator;
 
@@ -11,36 +51,18 @@ export class BasicExample {
         name: "Claude",
         role: "AI assistant",
         model: "anthropic",
-        modelName: "claude-3-haiku-20240307",
+        modelName: "claude-3-5-sonnet-20241022",
         allowedTools: [Tools.WEB_SEARCH, Tools.READ_LOCAL_FILE, Tools.LIST_LOCAL_FILES],
-        systemPrompt: `You are an AI assistant that can answer questions and help with tasks. You have access to tools that can read local files and search the web. 
-
-IMPORTANT: When asked about personal information (like someone's name), you MUST:
-1. First use list_local_files to see what files are available
-2. Then use read_local_file to read any relevant files (like personal_info.txt)
-3. Use the information from those files to answer the question accurately
-
-For factual questions, use web_search to get current information.
-
-Always use your tools when they could provide relevant information. Don't just say you don't know - actively search for the information using your available tools.`
+        systemPrompt: EXAMPLE_PROMPT
       },
-      {
-        name: "Gemini", 
-        role: "AI assistant",
-        model: "google",
-        modelName: "gemini-1.5-flash",
-        allowedTools: [Tools.WEB_SEARCH, Tools.READ_LOCAL_FILE, Tools.LIST_LOCAL_FILES],
-        systemPrompt: `You are an AI assistant that can answer questions and help with tasks. You have access to tools that can read local files and search the web.
-
-IMPORTANT: When asked about personal information (like someone's name), you MUST:
-1. First use list_local_files to see what files are available
-2. Then use read_local_file to read any relevant files (like personal_info.txt)
-3. Use the information from those files to answer the question accurately
-
-For factual questions, use web_search to get current information.
-
-Always use your tools when they could provide relevant information. Don't just say you don't know - actively search for the information using your available tools.`
-      },
+      // {
+      //   name: "Gemini", 
+      //   role: "AI assistant",
+      //   model: "google",
+      //   modelName: "gemini-1.5-flash",
+      //   allowedTools: [Tools.WEB_SEARCH, Tools.READ_LOCAL_FILE, Tools.LIST_LOCAL_FILES],
+      //   systemPrompt: EXAMPLE_PROMPT,
+      // },
     ];
 
     const agents = agentConfigs.map(config => new Agent(config));
@@ -83,7 +105,7 @@ Always use your tools when they could provide relevant information. Don't just s
 
   async runExampleScenarios(): Promise<void> {
     const scenarios = [
-      "Whats my name?",
+      'Whats my nationalId number?',
       // "Whats the capital of Colombia?",
     ];
 

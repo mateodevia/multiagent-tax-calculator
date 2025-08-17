@@ -19,11 +19,14 @@ The system now includes MCP tool support that allows agents to:
 ### 2. Local File Read Tool (`read_local_file`)
 - **Purpose**: Read files from the local context directory
 - **Usage**: Access project-specific tax documents, guidelines, and regulations
-- **Example**: "using read_local_file tax_regulations.txt"
+- **Supported Formats**: Text files (.txt, .md, .json, .csv, .xml, .yaml) and PDF files (.pdf)
+- **PDF Features**: Extracts text content, page count, and metadata (title, author, creation date)
+- **Example**: "using read_local_file tax_regulations.txt" or "using read_local_file tax_guide.pdf"
 
 ### 3. Local File List Tool (`list_local_files`)
 - **Purpose**: List all available files in the local context directory
 - **Usage**: Discover what local documentation is available
+- **Features**: Shows file types and formats for each file
 - **Example**: "using list_local_files"
 
 ## Configuration
@@ -64,15 +67,26 @@ local tax documents when needed. Use list_local_files to see what's available.`
 ## Local Files Directory
 
 The `src/context/localFiles/` directory contains:
-- `tax_regulations.txt` - Current tax brackets and standard deductions
-- `deduction_guidelines.txt` - Common deductions and limits
+- `sample_tax_document.md` - Tax planning strategies in Markdown format
+- `Cedula.pdf` - Sample PDF document demonstrating PDF reading capabilities
 
 ### Adding New Local Files
 
 1. Place files in `src/context/localFiles/`
-2. Files should be text-based (.txt, .md, .json, etc.)
+2. Supported formats:
+   - **Text files**: .txt, .md, .json, .csv, .xml, .yaml
+   - **PDF files**: .pdf (with full text extraction and metadata)
 3. Use descriptive filenames
 4. Update agent system prompts to reference new files
+
+### PDF File Features
+
+When reading PDF files, the tool provides:
+- Complete text content extraction
+- Page count information
+- Document metadata (title, author, creation date, etc.)
+- Creator and producer information
+- Formatted output for easy agent consumption
 
 ## How Tool Calling Works
 
@@ -171,10 +185,19 @@ const response = await agent.generateResponse(
 - Web search uses safe, read-only APIs
 - No sensitive information should be stored in local files
 
+## Recent Enhancements
+
+✅ **PDF Support Added**: 
+- Full PDF text extraction with metadata
+- Support for complex PDF documents
+- Automatic file type detection
+
 ## Future Enhancements
 
 Potential improvements:
 - Integration with real search APIs (Google, Bing)
-- Support for more file formats (PDF, Excel)
+- Support for Excel/spreadsheet files (.xlsx, .xls)
 - Database connectivity tools
 - API integration tools for tax services
+- OCR capabilities for scanned PDFs
+- Support for password-protected PDFs
